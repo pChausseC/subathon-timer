@@ -60,7 +60,9 @@ function onDisconnect() {
 
 function onAuthenticated(data: { channelId: string }) {
   const { channelId } = data;
-  console.log(`Successfully authenticated to streamelements channel ${channelId}`);
+  console.log(
+    `Successfully authenticated to streamelements channel ${channelId}`
+  );
 }
 
 export { socket as StreamElementsClient };

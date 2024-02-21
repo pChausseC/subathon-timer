@@ -23,7 +23,7 @@ export class CountdownTimer {
         const formattedTime = this.formatTime(this.remainingTime);
         const formattedElapsedTime = this.formatTime(this.timeElapsed);
         this.io.emit("timeUpdate", formattedTime);
-        this.io.emit('timeElapsed', formattedElapsedTime);
+        this.io.emit("timeElapsed", formattedElapsedTime);
       }
     }, 1000);
   }
@@ -36,6 +36,10 @@ export class CountdownTimer {
   }
 
   addTime(extraTime: number) {
+    if (this.remainingTime === 0) {
+      //cannot add more time when time is up
+      return;
+    }
     this.remainingTime += extraTime;
     console.log(
       `Added ${extraTime / (60 * 1000)} minutes. New remaining time: ${

@@ -5,8 +5,13 @@ import { Server } from "socket.io";
 import { CountdownTimer } from "./timer";
 import { StreamElementsClient } from "./streamelements-client";
 import { tierOne, tierThree, tierTwo } from "./points";
-
-interface ServerToClientEvents {}
+import * as Progress from "./progress";
+interface ServerToClientEvents {
+  timeUpdate: (time: string) => void;
+  timeElapsed: (time: string) => void;
+  event: (username: string, points: number) => void;
+  progress: (points: number) => void;
+}
 
 interface ClientToServerEvents {}
 
@@ -39,33 +44,37 @@ const timer = new CountdownTimer(20 * 60 * 1000, io);
 timer.start();
 
 StreamElementsClient.on("event", (event) => {
-  console.log({ event });
-
+  let points = 0;
   if (event.type === "tip") {
     //TODO Test
-    let points = event.data.amount * 2;
-    timer.addTime(60 * 1000 * points);
-  }
-  if (event.type === "communityGiftPurchase") {
-    // maybe dont do anything here?
+    points = event.data.amount * 2;
   }
   if (event.type === "subscriber") {
     switch (event.data.tier) {
       case "prime":
       case "1000":
-        timer.addTime(60 * 1000 * tierOne());
+        points = tierOne();
         break;
       case "2000":
-        timer.addTime(60 * 1000 * tierTwo());
+        points = tierTwo();
         break;
       case "3000":
-        timer.addTime(60 * 1000 * tierThree());
+        points = tierThree();
         break;
     }
   }
   if (event.type === "cheer") {
     //TODO Test
-    let points = (event.data.amount / 100) * 2;
+    points = (event.data.amount / 100) * 2;
+  }
+  if (points) {
     timer.addTime(60 * 1000 * points);
+    io.emit("progress", Progress.update(points));
+    io.emit("event", event.data.displayName, points);
   }
 });
+
+setInterval(() => {
+  io.emit("event", "test", 40);
+  io.emit("progress", Progress.update(40));
+}, 6000);
