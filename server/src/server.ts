@@ -1,14 +1,14 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import { EventsMap } from "@socket.io/component-emitter";
 import { Server } from "socket.io";
 import { CountdownTimer } from "./timer";
+import { StreamElementsClient } from "./streamelements-client";
+import { tierOne, tierThree, tierTwo } from "./points";
 
-interface ServerToClientEvents {
-  message: (m: string) => void;
-}
+interface ServerToClientEvents {}
 
-interface ClientToServerEvents {
-  message: (m: string) => void;
-}
+interface ClientToServerEvents {}
 
 interface SocketData {
   name: string;
@@ -30,12 +30,6 @@ const io = new Server<
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
 
-  // Listen for incoming messages and broadcast to all clients
-  socket.on("message", (message) => {
-    console.log(message);
-    io.emit("message", message);
-  });
-
   // Clean up the socket on disconnect
   socket.on("disconnect", () => {
     console.log(`Socket ${socket.id} disconnected.`);
@@ -43,12 +37,39 @@ io.on("connection", (socket) => {
 });
 
 // Example usage
-const timer = new CountdownTimer(30 * 60 * 1000, io);
+const timer = new CountdownTimer(20 * 60 * 1000, io);
 
 // Start the timer
 timer.start();
 
-// Example of adding time after 5 minutes
-setTimeout(() => {
-  timer.addTime(5 * 60 * 1000); // Add 5 minutes
-}, 5 * 1000);
+StreamElementsClient.on("event", (event) => {
+  console.log({ event });
+
+  if (event.type === "tip") {
+    //TODO Test
+    let points = event.data.amount * 2;
+    timer.addTime(60 * 1000 * points);
+  }
+  if (event.type === "communityGiftPurchase") {
+    // maybe dont do anything here?
+  }
+  if (event.type === "subscriber") {
+    switch (event.data.tier) {
+      case "prime":
+      case "1000":
+        timer.addTime(60 * 1000 * tierOne());
+        break;
+      case "2000":
+        timer.addTime(60 * 1000 * tierTwo());
+        break;
+      case "3000":
+        timer.addTime(60 * 1000 * tierThree());
+        break;
+    }
+  }
+  if (event.type === "cheer") {
+    //TODO Test
+    let points = (event.data.amount / 100) * 2;
+    timer.addTime(60 * 1000 * points);
+  }
+});
