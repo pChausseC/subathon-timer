@@ -5,8 +5,15 @@ import { type DefaultEventsMap } from "@socket.io/component-emitter";
 import { createContext, useContext, useEffect, useState } from "react";
 import { io as ClientIO, type Socket } from "socket.io-client";
 
+interface ServerToClientEvents {
+  timeUpdate: (time: string) => void;
+  timeElapsed: (time: string) => void;
+  event: (username: string, points: number) => void;
+  progress: (points: number) => void;
+}
+
 type SocketContextType = {
-  socket: Socket<DefaultEventsMap, DefaultEventsMap> | null;
+  socket: Socket<ServerToClientEvents, DefaultEventsMap> | null;
   isConnected: boolean;
 };
 
