@@ -21,7 +21,7 @@ const io = new Server<
   ServerToClientEvents,
   EventsMap,
   SocketData
->(port);
+>(port, { cors: { origin: process.env.CLIENT_URL, credentials: true } });
 
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
