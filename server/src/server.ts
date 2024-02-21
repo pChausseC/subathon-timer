@@ -21,7 +21,7 @@ const io = new Server<
   ServerToClientEvents,
   EventsMap,
   SocketData
->(4000, {
+>(1000, {
   cors: {
     origin: "http://localhost:3000",
   },
