@@ -14,18 +14,14 @@ interface SocketData {
   name: string;
   age: number;
 }
-
+const port = Number(process.env.PORT) || 4000;
 // Create a socket.io server
 const io = new Server<
   ClientToServerEvents,
   ServerToClientEvents,
   EventsMap,
   SocketData
->(1000, {
-  cors: {
-    origin: "http://localhost:3000",
-  },
-});
+>(port);
 
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
