@@ -2,11 +2,13 @@ import { Server as SocketServer, Socket } from "socket.io";
 
 export class CountdownTimer {
   private remainingTime: number;
+  private timeElapsed: number;
   private timerId: NodeJS.Timeout | null;
   private io: SocketServer;
 
   constructor(private initialTime: number = 30 * 60 * 1000, io: SocketServer) {
     this.remainingTime = initialTime;
+    this.timeElapsed = 0;
     this.timerId = null;
     this.io = io;
   }
@@ -17,8 +19,11 @@ export class CountdownTimer {
         this.stop();
       } else {
         this.remainingTime -= 1000; // Subtract one second
+        this.timeElapsed += 1000;
         const formattedTime = this.formatTime(this.remainingTime);
+        const formattedElapsedTime = this.formatTime(this.timeElapsed);
         this.io.emit("timeUpdate", formattedTime);
+        this.io.emit('timeElapsed', formattedElapsedTime);
       }
     }, 1000);
   }
