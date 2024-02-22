@@ -32,7 +32,7 @@ export const TimeLeft = () => {
 
   return (
     <div
-      className="group flex items-stretch gap-2 text-6xl transition-colors duration-500 data-[glow=true]:text-primary"
+      className="group flex items-stretch gap-2 text-6xl transition-colors duration-500 data-[glow=true]:text-primary font-bold"
       data-glow={glowing}
     >
       {loading ? (
