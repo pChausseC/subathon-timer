@@ -32,17 +32,21 @@ export const TimeLeft = () => {
 
   return (
     <div
-      className="group flex items-stretch gap-2 text-6xl transition-colors duration-500 data-[glow=true]:text-primary font-bold"
+      className="group flex items-stretch gap-2 text-6xl font-bold transition-colors duration-500 data-[glow=true]:text-primary"
       data-glow={glowing}
     >
       {loading ? (
-        <Skeleton className="px-1 text-[47px]">00</Skeleton>
+        <Skeleton className="px-1 text-[47px] w-[2ch]">00</Skeleton>
       ) : (
         <div className="flex items-center bg-foreground px-1 text-[47px] text-background group-data-[glow=true]:bg-primary">
-          {days}
+          <span className="w-[2ch]">{days}</span>
         </div>
       )}
-      {loading ? <Skeleton>00:00:00</Skeleton> : time}
+      {loading ? (
+        <Skeleton className="w-[5.9ch]">00:00:00</Skeleton>
+      ) : (
+        <span className="w-[6.1ch]">{time}</span>
+      )}
     </div>
   );
 };

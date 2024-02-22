@@ -24,7 +24,7 @@ export const TimeElapsed = () => {
     <div className="flex w-full items-center gap-2 text-2xl font-bold">
       <hr className="flex-1 rounded-sm border-t-[0.1875rem] border-foreground" />
       <TimerIcon />
-      {loading ? <Skeleton>00:00:00:00</Skeleton> : time}
+      {loading ? <Skeleton className="w-[9ch]">00:00:00:00</Skeleton> : <span className="w-[9ch]">{time}</span>}
       <hr className="flex-1 rounded-sm border-t-[0.1875rem] border-foreground" />
     </div>
   );
