@@ -6,6 +6,7 @@ export class CountdownTimer {
   private timeElapsed: number;
   private timerId: NodeJS.Timeout | null;
   private io: SocketServer<ClientToServerEvents, ServerToClientEvents>;
+  private isRunning_: boolean;
 
   constructor(
     private initialTime: number = 30 * 60 * 1000,
@@ -18,6 +19,7 @@ export class CountdownTimer {
   }
 
   start() {
+    this.isRunning_ = true;
     this.timerId = setInterval(() => {
       if (this.remainingTime <= 0) {
         this.stop();
@@ -38,9 +40,12 @@ export class CountdownTimer {
     if (this.timerId) {
       clearInterval(this.timerId);
       this.timerId = null;
+      this.isRunning_ = false;
     }
   }
-
+  get isRunning() {
+    return this.isRunning_;
+  }
   addTime(extraTime: number) {
     if (this.remainingTime === 0) {
       //cannot add more time when time is up

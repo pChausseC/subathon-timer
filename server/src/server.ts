@@ -12,7 +12,10 @@ export interface ServerToClientEvents {
   progress: (points: number) => void;
 }
 
-export interface ClientToServerEvents {}
+export interface ClientToServerEvents {
+  start: () => void;
+  stop: () => void;
+}
 
 const port = Number(process.env.PORT) || 4000;
 // Create a socket.io server
@@ -20,20 +23,32 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(port, {
   cors: { origin: process.env.CLIENT_URL },
 });
 
+// Example usage
+const timer = new CountdownTimer(20 * 60 * 1000, io);
+
+let testRoutineInterval: NodeJS.Timeout;
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
+  socket.on("start", () => {
+    //test routine
+    testRoutineInterval = setInterval(() => {
+      io.emit("event", "IONCANNON", 40);
+      io.emit("progress", Progress.update(40));
+    }, 10000);
 
+    timer.start();
+  });
+  socket.on("stop", () => {
+    if (timer.isRunning) {
+      clearInterval(testRoutineInterval);
+      timer.stop();
+    }
+  });
   // Clean up the socket on disconnect
   socket.on("disconnect", () => {
     console.log(`Socket ${socket.id} disconnected.`);
   });
 });
-
-// Example usage
-const timer = new CountdownTimer(20 * 60 * 1000, io);
-
-// Start the timer
-timer.start();
 
 StreamElementsClient.on("event", (event) => {
   let points = 0;
@@ -65,8 +80,3 @@ StreamElementsClient.on("event", (event) => {
     io.emit("event", event.data.displayName, points);
   }
 });
-
-setInterval(() => {
-  io.emit("event", "IONCANNON", 40);
-  io.emit("progress", Progress.update(40));
-}, 10000);
