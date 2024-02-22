@@ -24,7 +24,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(port, {
 });
 
 // Example usage
-const timer = new CountdownTimer(20 * 60 * 1000, io);
+const timer = new CountdownTimer(60 * 60 * 1000, io);
 
 let testRoutineInterval: NodeJS.Timeout;
 io.on("connection", (socket) => {
