@@ -45,8 +45,8 @@ io.on("connection", (socket) => {
     timer.start();
   });
   socket.on("stop", () => {
+    clearInterval(testRoutineInterval);
     if (timer.isRunning) {
-      clearInterval(testRoutineInterval);
       timer.stop();
     }
   });
