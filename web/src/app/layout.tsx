@@ -1,14 +1,7 @@
 import "@/styles/globals.css";
 
-import { Inter } from "next/font/google";
-
 import { TRPCReactProvider } from "@/trpc/react";
 import { SocketProvider } from "@/providers/socket-provider";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export const metadata = {
   title: "Subathon Timer",
@@ -24,7 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <head>
+        <link rel="stylesheet" href="https://use.typekit.net/yjt5qpq.css" />
+      </head>
+      <body className={`font-sans`}>
         <TRPCReactProvider>
           <SocketProvider>{children}</SocketProvider>
         </TRPCReactProvider>
