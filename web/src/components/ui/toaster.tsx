@@ -27,7 +27,7 @@ export function Toaster() {
     };
   }, [socket, toast]);
   return (
-    <ToastProvider duration={5000}>
+    <ToastProvider duration={5000} >
       {toasts.map(function ({ id, name, points, ...props }) {
         return (
           <Toast key={id} {...props}>
