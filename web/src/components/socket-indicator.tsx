@@ -7,13 +7,13 @@ export const SocketIndicator = () => {
   const { isConnected } = useSocket();
   if (!isConnected) {
     return (
-      <Badge variant="outline" className="border-none bg-yellow-600 text-white">
+      <Badge variant="outline" className="border-none bg-yellow-600 ">
         Fallback: Polling every 1s
       </Badge>
     );
   }
   return (
-    <Badge variant="outline" className="border-none bg-emerald-600 text-white">
+    <Badge variant="outline" className="border-none bg-emerald-600 ">
      Live: Real-time updates
     </Badge>
   );

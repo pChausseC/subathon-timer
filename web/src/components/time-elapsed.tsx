@@ -17,5 +17,5 @@ export const TimeElapsed = () => {
       socket?.off("timeElapsed");
     };
   }, [socket]);
-  return <div className="font-mono">{time}</div>;
+  return <div className="font-mono text-2xl">{time}</div>;
 };

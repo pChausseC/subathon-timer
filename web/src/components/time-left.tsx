@@ -17,5 +17,5 @@ export const TimeLeft = () => {
       socket?.off("timeUpdate");
     };
   }, [socket]);
-  return <div className="font-mono">{time}</div>;
+  return <div className="font-mono text-6xl">{time}</div>;
 };

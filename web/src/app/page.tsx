@@ -5,11 +5,11 @@ import { TimeLeft } from "@/components/time-left";
 import { Toaster } from "@/components/ui/toaster";
 export default async function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-stone-900 text-white">
+    <main className="flex min-h-screen flex-col items-center justify-center e">
       <div className="relative w-full">
         <Toaster />
       </div>
-      <div className="z-10 flex flex-col items-center justify-center gap-2 rounded-xl border-white bg-black p-5">
+      <div className="z-10 flex flex-col items-center justify-center gap-2 bg-black rounded-lg border-2 border-white p-5">
         <SocketIndicator />
         <TimeLeft />
         <TimeElapsed />
