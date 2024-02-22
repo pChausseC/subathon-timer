@@ -39,13 +39,13 @@ export const TimeLeft = () => {
         <Skeleton className="px-1 text-[47px] w-[2ch]">00</Skeleton>
       ) : (
         <div className="flex items-center bg-foreground px-1 text-[47px] text-background group-data-[glow=true]:bg-primary">
-          <span className="w-[2ch] text-center">{days}</span>
+          <span className="w-[2ch] text-center leading-[30px] mb-[15px]">{days}</span>
         </div>
       )}
       {loading ? (
         <Skeleton className="w-[6.7ch]">00:00:00</Skeleton>
       ) : (
-        <span className="w-[6.7ch]">{time}</span>
+        <span className="w-[6.7ch] leading-[30px] mb-[20px]">{time}</span>
       )}
     </div>
   );
