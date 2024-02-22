@@ -1,11 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSocket } from "@/providers/socket-provider";
+import { Skeleton } from "./ui/skeleton";
 export const TimeLeft = () => {
   const [time, setTime] = useState("");
   const [days, setDays] = useState("");
   const [glowing, setGlowing] = useState(false);
   const { socket } = useSocket();
+  const loading = useMemo(() => time === "", [time]);
   useEffect(() => {
     if (!socket) {
       return;
@@ -27,12 +29,20 @@ export const TimeLeft = () => {
       socket.off("event");
     };
   }, [socket]);
+
   return (
     <div
-      className="font-mono text-6xl transition-colors duration-500 data-[glow=true]:text-primary flex items-stretch gap-2 leading-[3rem] group"
+      className="group flex items-stretch gap-2 font-mono text-6xl leading-[3rem] transition-colors duration-500 data-[glow=true]:text-primary"
       data-glow={glowing}
     >
-      <div className="bg-foreground text-background group-data-[glow=true]:bg-primary text-[47px] flex items-center px-1">{days}</div>{time}
+      {loading ? (
+        <Skeleton className="px-1 text-[47px]">00</Skeleton>
+      ) : (
+        <div className="flex items-center bg-foreground px-1 text-[47px] text-background group-data-[glow=true]:bg-primary">
+          {days}
+        </div>
+      )}
+      {loading ? <Skeleton>00:00:00</Skeleton> : time}
     </div>
   );
 };
