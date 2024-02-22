@@ -1,12 +1,16 @@
-import { Server as SocketServer, Socket } from "socket.io";
+import { Server as SocketServer } from "socket.io";
+import { ClientToServerEvents, ServerToClientEvents } from "./server";
 
 export class CountdownTimer {
   private remainingTime: number;
   private timeElapsed: number;
   private timerId: NodeJS.Timeout | null;
-  private io: SocketServer;
+  private io: SocketServer<ClientToServerEvents, ServerToClientEvents>;
 
-  constructor(private initialTime: number = 30 * 60 * 1000, io: SocketServer) {
+  constructor(
+    private initialTime: number = 30 * 60 * 1000,
+    io: SocketServer<ClientToServerEvents, ServerToClientEvents>
+  ) {
     this.remainingTime = initialTime;
     this.timeElapsed = 0;
     this.timerId = null;
@@ -20,9 +24,11 @@ export class CountdownTimer {
       } else {
         this.remainingTime -= 1000; // Subtract one second
         this.timeElapsed += 1000;
-        const formattedTime = this.formatTime(this.remainingTime);
+        const formattedTime = this.formatTime(this.remainingTime, {
+          splitDays: true,
+        });
         const formattedElapsedTime = this.formatTime(this.timeElapsed);
-        this.io.emit("timeUpdate", formattedTime);
+        this.io.emit("timeUpdate", formattedTime.days, formattedTime.time);
         this.io.emit("timeElapsed", formattedElapsedTime);
       }
     }, 1000);
@@ -46,25 +52,40 @@ export class CountdownTimer {
         this.remainingTime / (60 * 1000)
       } minutes.`
     );
-    const formattedTime = this.formatTime(this.remainingTime);
-    this.io.emit("timeUpdate", formattedTime);
+    const formattedTime = this.formatTime(this.remainingTime, {
+      splitDays: true,
+    });
+    this.io.emit("timeUpdate", formattedTime.days, formattedTime.time);
   }
 
   getRemainingTime(): number {
     return this.remainingTime;
   }
-  private formatTime(milliseconds: number): string {
+
+  private formatTime(
+    milliseconds: number,
+    opts: { splitDays: true }
+  ): { days: string; time: string };
+  private formatTime(
+    milliseconds: number,
+    opts?: { splitDays?: false }
+  ): string;
+  private formatTime(
+    milliseconds: number,
+    opts?: { splitDays?: boolean }
+  ): string | { days: string; time: string } {
     const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
     const hours = Math.floor(
       (milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
     const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
-
-    return `${days.toString().padStart(2, "0")}:${hours
+    const time = `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
-      .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    if (opts?.splitDays) {
+      return { days: days.toString().padStart(2, "0"), time };
+    }
+    return `${days.toString().padStart(2, "0")}:${time}`;
   }
 }

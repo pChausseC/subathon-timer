@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { io as ClientIO, type Socket } from "socket.io-client";
 
 interface ServerToClientEvents {
-  timeUpdate: (time: string) => void;
+  timeUpdate: (days: string, time: string) => void;
   timeElapsed: (time: string) => void;
   event: (username: string, points: number) => void;
   progress: (points: number) => void;

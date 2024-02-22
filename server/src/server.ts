@@ -1,32 +1,24 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-import { EventsMap } from "@socket.io/component-emitter";
 import { Server } from "socket.io";
 import { CountdownTimer } from "./timer";
 import { StreamElementsClient } from "./streamelements-client";
 import { tierOne, tierThree, tierTwo } from "./points";
 import * as Progress from "./progress";
-interface ServerToClientEvents {
-  timeUpdate: (time: string) => void;
+export interface ServerToClientEvents {
+  timeUpdate: (days: string, time: string) => void;
   timeElapsed: (time: string) => void;
   event: (username: string, points: number) => void;
   progress: (points: number) => void;
 }
 
-interface ClientToServerEvents {}
+export interface ClientToServerEvents {}
 
-interface SocketData {
-  name: string;
-  age: number;
-}
 const port = Number(process.env.PORT) || 4000;
 // Create a socket.io server
-const io = new Server<
-  ClientToServerEvents,
-  ServerToClientEvents,
-  EventsMap,
-  SocketData
->(port, { cors: { origin: process.env.CLIENT_URL } });
+const io = new Server<ClientToServerEvents, ServerToClientEvents>(port, {
+  cors: { origin: process.env.CLIENT_URL },
+});
 
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
@@ -75,6 +67,6 @@ StreamElementsClient.on("event", (event) => {
 });
 
 setInterval(() => {
-  io.emit("event", "test", 40);
+  io.emit("event", "IONCANNON", 40);
   io.emit("progress", Progress.update(40));
-}, 6000);
+}, 10000);
