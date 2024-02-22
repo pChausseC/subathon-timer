@@ -63,10 +63,14 @@ export class CountdownTimer {
     this.io.emit("timeUpdate", formattedTime.days, formattedTime.time);
   }
 
-  getRemainingTime(): number {
-    return this.remainingTime;
+  getRemainingTime(): { days: string; time: string } {
+    return this.formatTime(this.remainingTime, {
+      splitDays: true,
+    });
   }
-
+  getTimeElapsed(): string {
+    return this.formatTime(this.timeElapsed);
+  }
   private formatTime(
     milliseconds: number,
     opts: { splitDays: true }

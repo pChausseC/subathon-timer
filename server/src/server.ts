@@ -29,6 +29,12 @@ const timer = new CountdownTimer(20 * 60 * 1000, io);
 let testRoutineInterval: NodeJS.Timeout;
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
+  const { days, time } = timer.getRemainingTime();
+  // Send Timer and Progress Status
+  socket.emit("timeUpdate", days, time);
+  socket.emit("timeElapsed", timer.getTimeElapsed());
+  socket.emit("progress", Progress.progress);
+
   socket.on("start", () => {
     //test routine
     testRoutineInterval = setInterval(() => {
