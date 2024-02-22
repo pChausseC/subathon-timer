@@ -11,9 +11,12 @@ interface ServerToClientEvents {
   event: (username: string, points: number) => void;
   progress: (points: number) => void;
 }
-
+export interface ClientToServerEvents {
+  start: () => void;
+  stop: () => void;
+}
 type SocketContextType = {
-  socket: Socket<ServerToClientEvents, DefaultEventsMap> | null;
+  socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
   isConnected: boolean;
 };
 

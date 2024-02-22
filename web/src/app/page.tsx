@@ -1,3 +1,4 @@
+import { Controls } from "@/components/controls";
 import { Goal } from "@/components/goal";
 import { ProgressBar } from "@/components/progress-bar";
 import { SocketIndicator } from "@/components/socket-indicator";
@@ -16,7 +17,8 @@ export default async function Home() {
         <ProgressBar />
         <Goal />
       </div>
-      <div className="fixed bottom-5 left-1/2 -translate-x-[50%]">
+      <div className="fixed bottom-5 left-1/2 -translate-x-[50%] text-center space-y-2">
+        <Controls />
         <SocketIndicator />
       </div>
     </main>
