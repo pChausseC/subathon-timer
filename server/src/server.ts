@@ -15,6 +15,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
+  test: () => void;
 }
 
 const port = Number(process.env.PORT) || 4000;
@@ -37,12 +38,13 @@ io.on("connection", (socket) => {
 
   socket.on("start", () => {
     //test routine
-    testRoutineInterval = setInterval(() => {
-      io.emit("event", "IONCANNON", 40);
-      io.emit("progress", Progress.update(40));
-    }, 10000);
-
     timer.start();
+  });
+  socket.on("test", () => {
+    const p = tierOne();
+    timer.addTime(60 * 1000 * p);
+    io.emit("progress", Progress.update(p));
+    io.emit("event", "test", p);
   });
   socket.on("stop", () => {
     clearInterval(testRoutineInterval);

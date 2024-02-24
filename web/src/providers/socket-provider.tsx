@@ -14,6 +14,7 @@ interface ServerToClientEvents {
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
+  test: () => void;
 }
 type SocketContextType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
