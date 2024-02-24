@@ -15,13 +15,19 @@ export const TimeLeft = () => {
     }
     let timeout: NodeJS.Timeout | undefined;
     socket.on("timeUpdate", (days, time) => {
-      setGlow((g) => g - 0.1);
+      setGlow((g) => {
+        if (g <= 0) return 0;
+        if (g > 10_000) return 5_000;
+        if (g > 2000) return g - 10;
+        if (g > 500) return g - 4;
+        return g - 1;
+      });
       setDays(days);
       setTime(time);
     });
     socket.on("event", (_, pts) => {
       clearTimeout(timeout);
-      setGlow((g) => g + pts / 10);
+      setGlow((g) => g + pts * 10);
       setGlowing(true);
       timeout = setTimeout(() => {
         setGlowing(false);
@@ -52,10 +58,10 @@ export const TimeLeft = () => {
         <Skeleton className="w-[6.7ch]">00:00:00</Skeleton>
       ) : (
         <span
-          className="group-data-[glow=true]:animate-glow mb-[20px] w-[6.7ch] leading-[30px]"
+          className="mb-[20px] w-[6.7ch] leading-[30px] group-data-[glow=true]:animate-glow"
           style={
             !glowing
-              ? { textShadow: `0 1px 20px rgb(243 243 243/${glow / 100})` }
+              ? { textShadow: `0 1px 20px rgb(243 243 243/${glow / 1_000})` }
               : undefined
           }
         >
