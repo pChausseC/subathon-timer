@@ -13,7 +13,7 @@ export const SocketIndicator = () => {
     );
   }
   return (
-    <Badge variant="outline" className="border-none bg-emerald-600 ">
+    <Badge variant="outline" className="border-none bg-emerald-600 text-primary-foreground">
      Live: Real-time updates
     </Badge>
   );

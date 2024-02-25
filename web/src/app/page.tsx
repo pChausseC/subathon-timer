@@ -12,7 +12,7 @@ export default async function Home() {
       <div className="relative w-full">
         <Toaster />
       </div>
-      <div className="relative z-10 rounded-[10px] border-2 border-white bg-transparent">
+      <div className="relative z-10 rounded-[10px] border-2 border-white bg-transparent dark text-foreground ">
         <VideoBackground />
         <div className="relative flex flex-col items-center justify-center gap-2 px-5 pb-8 pt-4">
           <TimeLeft />
@@ -21,7 +21,7 @@ export default async function Home() {
           <Goal />
         </div>
       </div>
-      <div className="fixed bottom-5 left-1/2 -translate-x-[50%] space-y-2 text-center">
+      <div className="fixed bottom-5 left-1/2 -translate-x-[50%] space-y-2 text-center font-inter">
         <Controls />
         <SocketIndicator />
       </div>

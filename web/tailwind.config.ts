@@ -20,6 +20,7 @@ const config = {
     extend: {
       fontFamily: {
         sans: ["'obviously-narrow'", "sans-serif"],
+        inter: ["var(--font-inter)", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

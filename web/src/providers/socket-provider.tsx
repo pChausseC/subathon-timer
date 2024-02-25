@@ -15,7 +15,7 @@ interface ServerToClientEvents {
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
-  test: () => void;
+  add: (tier?: "1" | "2" | "3") => void;
   setGoal: (goal: string) => void;
 }
 type SocketContextType = {
