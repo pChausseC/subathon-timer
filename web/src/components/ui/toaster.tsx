@@ -23,7 +23,7 @@ export function Toaster() {
     });
 
     return () => {
-      socket?.off("timeUpdate");
+      socket?.off("event");
     };
   }, [socket, toast]);
   return (
