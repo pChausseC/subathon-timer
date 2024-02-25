@@ -16,7 +16,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
-  test: () => void;
+  add: (tier?: "1" | "2" | "3") => void;
   setGoal: (goal: string) => void;
 }
 
@@ -40,11 +40,24 @@ io.on("connection", (socket) => {
     //test routine
     timer.start();
   });
-  socket.on("test", () => {
-    const p = tierOne();
+  socket.on("add", (tier = "1") => {
+    let p: number;
+    switch (tier) {
+      case "1":
+        p = tierOne();
+        break;
+      case "2":
+        p = tierTwo();
+        break;
+      case "3":
+        p = tierThree();
+        break;
+      default:
+        p = tierOne();
+    }
     timer.addTime(60 * 1000 * p);
     io.emit("progress", Progress.update(p));
-    io.emit("event", "test", p);
+    io.emit("event", `test-${tier}`, p);
   });
   socket.on("setGoal", (goal) => {
     Progress.setGoal(goal);
