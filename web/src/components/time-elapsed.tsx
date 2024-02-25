@@ -21,13 +21,13 @@ export const TimeElapsed = () => {
     };
   }, [socket]);
   return (
-    <div className="flex w-full items-center gap-2 text-2xl font-bold">
+    <div className="flex w-full items-center gap-2 text-2xl">
       <hr className="flex-1 rounded-sm border-t-[0.1875rem] border-foreground" />
       <TimerIcon />
       {loading ? (
-        <Skeleton className="w-[9ch] ">00:00:00:00</Skeleton>
+        <Skeleton className="w-[9.6ch] ">00:00:00:00</Skeleton>
       ) : (
-        <span className="mb-[5px] w-[9ch] leading-[16px]">{time}</span>
+        <span className="relative bottom-1 w-[9.6ch] leading-[0] font-semibold tracking-wide">{time}</span>
       )}
       <hr className="flex-1 rounded-sm border-t-[0.1875rem] border-foreground" />
     </div>
