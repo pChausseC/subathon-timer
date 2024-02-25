@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
     }
     timer.addTime(60 * 1000 * p);
     io.emit("progress", Progress.update(p));
-    io.emit("event", `test-${tier}`, p);
+    io.emit("event", `IONCANNON`, p);
   });
   socket.on("setGoal", (goal) => {
     Progress.setGoal(goal);
