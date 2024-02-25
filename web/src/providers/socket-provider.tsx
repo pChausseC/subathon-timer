@@ -10,11 +10,13 @@ interface ServerToClientEvents {
   timeElapsed: (time: string) => void;
   event: (username: string, points: number) => void;
   progress: (points: number) => void;
+  goal: (goal: string) => void;
 }
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
   test: () => void;
+  setGoal: (goal: string) => void;
 }
 type SocketContextType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;

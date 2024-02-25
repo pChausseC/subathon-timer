@@ -10,12 +10,14 @@ export interface ServerToClientEvents {
   timeElapsed: (time: string) => void;
   event: (username: string, points: number) => void;
   progress: (points: number) => void;
+  goal: (goal: string) => void;
 }
 
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
   test: () => void;
+  setGoal: (goal: string) => void;
 }
 
 const port = Number(process.env.PORT) || 4000;
@@ -26,8 +28,6 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(port, {
 
 // Example usage
 const timer = new CountdownTimer(60 * 60 * 1000, io);
-
-let testRoutineInterval: NodeJS.Timeout;
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
   const { days, time } = timer.getRemainingTime();
@@ -35,7 +35,7 @@ io.on("connection", (socket) => {
   socket.emit("timeUpdate", days, time);
   socket.emit("timeElapsed", timer.getTimeElapsed());
   socket.emit("progress", Progress.progress);
-
+  socket.emit("goal", Progress.goal);
   socket.on("start", () => {
     //test routine
     timer.start();
@@ -46,8 +46,11 @@ io.on("connection", (socket) => {
     io.emit("progress", Progress.update(p));
     io.emit("event", "test", p);
   });
+  socket.on("setGoal", (goal) => {
+    Progress.setGoal(goal);
+    io.emit("goal", Progress.goal);
+  });
   socket.on("stop", () => {
-    clearInterval(testRoutineInterval);
     if (timer.isRunning) {
       timer.stop();
     }
