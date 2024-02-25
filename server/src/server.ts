@@ -26,8 +26,7 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(port, {
   cors: { origin: process.env.CLIENT_URL },
 });
 
-// Example usage
-const timer = new CountdownTimer(60 * 60 * 1000, io);
+const timer = new CountdownTimer(4 * 24 * 60 * 60 * 1000, io);
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
   const { days, time } = timer.getRemainingTime();
