@@ -29,7 +29,7 @@ export function Toaster() {
     };
   }, [socket, toast]);
   return (
-    <ToastProvider duration={10000000}>
+    <ToastProvider duration={5000}>
       {toasts.map(function ({ id, name, points, ...props }) {
         return (
           <SubPopup key={id} name={name} initialPoints={points} {...props} />
