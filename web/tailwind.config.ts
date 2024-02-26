@@ -71,11 +71,15 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        pump: {
+          "50%": { scale: "0.99" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "glow": "glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        glow: "glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        pump: "pump 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },
