@@ -13,23 +13,26 @@ export const SubPopup = React.forwardRef<
   const [points, setPoints] = React.useState(initialPoints);
   const [giftRecievers, setGiftRecievers] = React.useState<string[]>([]);
   const { socket } = useSocket();
+  const eventHandler: ServerToClientEvents["event"] = useCallback(
+    (reciever, points, sender) => {
+      if (sender === name) {
+        setPoints((p) => p + points);
+        setGiftRecievers((a) => [...a, `+${points} ${reciever}`]);
+      }
+    },
+    [name],
+  );
   React.useEffect(() => {
     if (!socket) {
       return;
     }
 
-    socket.on("event", (reciever, points, sender) => {
-      if (sender === name) {
-        console.log(sender, `gifted +${points} ${reciever}`);
-        setPoints((p) => p + points);
-        setGiftRecievers((a) => [...a, `+${points} ${reciever}`]);
-      }
-    });
+    socket.on("event", eventHandler);
 
     return () => {
-      socket?.off("event");
+      socket?.off("event", eventHandler);
     };
-  }, [socket, name]);
+  }, [socket, eventHandler]);
   return (
     <Toast {...props} ref={ref} className="flex flex-col">
       <div className="mx-auto">

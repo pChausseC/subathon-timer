@@ -5,7 +5,7 @@ import { type DefaultEventsMap } from "@socket.io/component-emitter";
 import { createContext, useContext, useEffect, useState } from "react";
 import { io as ClientIO, type Socket } from "socket.io-client";
 
-interface ServerToClientEvents {
+export interface ServerToClientEvents {
   timeUpdate: (days: string, time: string, points: number) => void;
   timeElapsed: (time: string) => void;
   event: (username: string, points: number, sender?: string) => void;
