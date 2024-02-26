@@ -28,6 +28,7 @@ interface StreamElementsEvent {
     quantity?: number;
     items: any[]; // Define a specific type for items if available
     avatar: string;
+    sender?: string;
   };
   createdAt: string;
   updatedAt: string;
