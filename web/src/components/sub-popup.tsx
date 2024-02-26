@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+import React, { useCallback } from "react";
 import { Toast, ToastDescription } from "./ui/toast";
-import { useSocket } from "@/providers/socket-provider";
+import { type ServerToClientEvents, useSocket } from "@/providers/socket-provider";
 
 export const SubPopup = React.forwardRef<
   React.ElementRef<typeof Toast>,
