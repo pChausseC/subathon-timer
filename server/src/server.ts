@@ -36,8 +36,9 @@ io.on("connection", (socket) => {
   socket.emit("progress", Progress.progress);
   socket.emit("goal", Progress.goal);
   socket.on("start", () => {
-    //test routine
-    timer.start();
+    if (!timer.isRunning) {
+      timer.start();
+    }
   });
   socket.on("add", (tier = "1") => {
     let p: number;
