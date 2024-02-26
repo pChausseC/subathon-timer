@@ -20,7 +20,7 @@ export const SubPopup = React.forwardRef<
 
     socket.on("event", (reciever, points, sender) => {
       if (sender === name) {
-        console.log(`+${points} ${reciever}`);
+        console.log(sender, `gifted +${points} ${reciever}`);
         setPoints((p) => p + points);
         setGiftRecievers((a) => [...a, `+${points} ${reciever}`]);
       }
