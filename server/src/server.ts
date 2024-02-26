@@ -94,7 +94,7 @@ StreamElementsClient.on("event", (event) => {
   if (event.type === "communityGiftPurchase") {
     console.log(event);
     //todo
-    io.emit("gift", event.data.displayName);
+    io.emit("gift", event.data.displayName ?? event.data.username);
   }
   if (event.type === "tip") {
     console.log(event);
@@ -123,6 +123,6 @@ StreamElementsClient.on("event", (event) => {
   if (points) {
     timer.addTime(60 * 1000 * points);
     io.emit("progress", Progress.update(points));
-    io.emit("event", event.data.displayName, points, sender);
+    io.emit("event", event.data.displayName ?? event.data.username, points, sender);
   }
 });
