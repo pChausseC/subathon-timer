@@ -30,7 +30,12 @@ export class CountdownTimer {
           splitDays: true,
         });
         const formattedElapsedTime = this.formatTime(this.timeElapsed);
-        this.io.emit("timeUpdate", formattedTime.days, formattedTime.time);
+        this.io.emit(
+          "timeUpdate",
+          formattedTime.days,
+          formattedTime.time,
+          this.remainingTime / (60 * 1000)
+        );
         this.io.emit("timeElapsed", formattedElapsedTime);
       }
     }, 1000);
@@ -60,13 +65,21 @@ export class CountdownTimer {
     const formattedTime = this.formatTime(this.remainingTime, {
       splitDays: true,
     });
-    this.io.emit("timeUpdate", formattedTime.days, formattedTime.time);
+    this.io.emit(
+      "timeUpdate",
+      formattedTime.days,
+      formattedTime.time,
+      this.remainingTime / (60 * 1000)
+    );
   }
 
-  getRemainingTime(): { days: string; time: string } {
-    return this.formatTime(this.remainingTime, {
-      splitDays: true,
-    });
+  getRemainingTime(): { days: string; time: string; points: number } {
+    return {
+      ...this.formatTime(this.remainingTime, {
+        splitDays: true,
+      }),
+      points: this.remainingTime / (60 * 1000),
+    };
   }
   getTimeElapsed(): string {
     return this.formatTime(this.timeElapsed);

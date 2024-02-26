@@ -6,7 +6,7 @@ import { StreamElementsClient } from "./streamelements-client";
 import { tierOne, tierThree, tierTwo } from "./points";
 import * as Progress from "./progress";
 export interface ServerToClientEvents {
-  timeUpdate: (days: string, time: string) => void;
+  timeUpdate: (days: string, time: string, points: number) => void;
   timeElapsed: (time: string) => void;
   event: (username: string, points: number) => void;
   progress: (points: number) => void;
@@ -26,12 +26,12 @@ const io = new Server<ClientToServerEvents, ServerToClientEvents>(port, {
   cors: { origin: process.env.CLIENT_URL },
 });
 
-const timer = new CountdownTimer(4 * 24 * 60 * 60 * 1000, io);
+const timer = new CountdownTimer(6 * 60 * 1000, io);
 io.on("connection", (socket) => {
   console.log(`Socket ${socket.id} connected.`);
-  const { days, time } = timer.getRemainingTime();
+  const { days, time, points } = timer.getRemainingTime();
   // Send Timer and Progress Status
-  socket.emit("timeUpdate", days, time);
+  socket.emit("timeUpdate", days, time, points);
   socket.emit("timeElapsed", timer.getTimeElapsed());
   socket.emit("progress", Progress.progress);
   socket.emit("goal", Progress.goal);
@@ -73,8 +73,16 @@ io.on("connection", (socket) => {
   });
 });
 
+StreamElementsClient.on("event-latest", (event) => {
+  console.log("latest", event);
+});
+
 StreamElementsClient.on("event", (event) => {
   let points = 0;
+  console.log(event);
+  if (event.type === "communityGiftPurchase") {
+    //todo
+  }
   if (event.type === "tip") {
     //TODO Test
     points = event.data.amount * 2;
