@@ -48,6 +48,14 @@ export const AddPoints = () => {
         >
           Tier 3 (25-28)
         </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            socket?.emit("add", "gift");
+          }}
+          className="cursor-pointer"
+        >
+          Gift X 5
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

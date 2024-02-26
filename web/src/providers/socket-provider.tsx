@@ -8,14 +8,15 @@ import { io as ClientIO, type Socket } from "socket.io-client";
 interface ServerToClientEvents {
   timeUpdate: (days: string, time: string, points: number) => void;
   timeElapsed: (time: string) => void;
-  event: (username: string, points: number) => void;
+  event: (username: string, points: number, sender?: string) => void;
+  gift: (username: string) => void;
   progress: (points: number) => void;
   goal: (goal: string) => void;
 }
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
-  add: (tier?: "1" | "2" | "3") => void;
+  add: (tier?: "1" | "2" | "3" | "gift") => void;
   setGoal: (goal: string) => void;
 }
 type SocketContextType = {

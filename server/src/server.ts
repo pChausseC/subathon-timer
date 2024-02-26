@@ -8,7 +8,8 @@ import * as Progress from "./progress";
 export interface ServerToClientEvents {
   timeUpdate: (days: string, time: string, points: number) => void;
   timeElapsed: (time: string) => void;
-  event: (username: string, points: number) => void;
+  event: (username: string, points: number, sender?: string) => void;
+  gift: (username: string) => void;
   progress: (points: number) => void;
   goal: (goal: string) => void;
 }
@@ -16,7 +17,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
-  add: (tier?: "1" | "2" | "3") => void;
+  add: (tier?: "1" | "2" | "3" | "gift") => void;
   setGoal: (goal: string) => void;
 }
 
@@ -52,12 +53,25 @@ io.on("connection", (socket) => {
       case "3":
         p = tierThree();
         break;
+      case "gift":
+        let sender = "gifter";
+        io.emit("gift", sender);
+        Array.from(Array(5)).forEach((_) => {
+          let a = tierOne();
+          timer.addTime(60 * 1000 * a);
+          io.emit("progress", Progress.update(a));
+          io.emit("event", `IONCANNON`, a, sender);
+        });
+        break;
       default:
         p = tierOne();
     }
-    timer.addTime(60 * 1000 * p);
-    io.emit("progress", Progress.update(p));
-    io.emit("event", `IONCANNON`, p);
+    if (tier !== "gift") {
+      timer.addTime(60 * 1000 * p);
+      io.emit("progress", Progress.update(p));
+      io.emit("event", `IONCANNON`, p);
+    } else {
+    }
   });
   socket.on("setGoal", (goal) => {
     Progress.setGoal(goal);
@@ -74,21 +88,16 @@ io.on("connection", (socket) => {
   });
 });
 
-StreamElementsClient.on("event:update", (event) => {
-  console.log("update", event);
-});
-StreamElementsClient.on("event:test", (event) => {
-  console.log("test", event);
-});
-
 StreamElementsClient.on("event", (event) => {
   let points = 0;
-  console.log(event);
+  let sender: string | undefined;
   if (event.type === "communityGiftPurchase") {
+    console.log(event);
     //todo
+    io.emit("gift", event.data.displayName);
   }
   if (event.type === "tip") {
-    //TODO Test
+    console.log(event);
     points = event.data.amount * 2;
   }
   if (event.type === "subscriber") {
@@ -104,6 +113,9 @@ StreamElementsClient.on("event", (event) => {
         points = tierThree();
         break;
     }
+    if (event.data.gifted) {
+      sender = event.data.sender;
+    }
   }
   if (event.type === "cheer") {
     points = (event.data.amount / 100) * 2;
@@ -111,6 +123,6 @@ StreamElementsClient.on("event", (event) => {
   if (points) {
     timer.addTime(60 * 1000 * points);
     io.emit("progress", Progress.update(points));
-    io.emit("event", event.data.displayName, points);
+    io.emit("event", event.data.displayName, points, sender);
   }
 });
