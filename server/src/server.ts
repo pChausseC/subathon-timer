@@ -74,8 +74,11 @@ io.on("connection", (socket) => {
   });
 });
 
-StreamElementsClient.on("event-latest", (event) => {
-  console.log("latest", event);
+StreamElementsClient.on("event:update", (event) => {
+  console.log("update", event);
+});
+StreamElementsClient.on("event:test", (event) => {
+  console.log("test", event);
 });
 
 StreamElementsClient.on("event", (event) => {
@@ -103,7 +106,6 @@ StreamElementsClient.on("event", (event) => {
     }
   }
   if (event.type === "cheer") {
-    //TODO Test
     points = (event.data.amount / 100) * 2;
   }
   if (points) {
