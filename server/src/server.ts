@@ -70,7 +70,6 @@ io.on("connection", (socket) => {
       timer.addTime(60 * 1000 * p);
       io.emit("progress", Progress.update(p));
       io.emit("event", `IONCANNON`, p);
-    } else {
     }
   });
   socket.on("setGoal", (goal) => {
@@ -123,6 +122,11 @@ StreamElementsClient.on("event", (event) => {
   if (points) {
     timer.addTime(60 * 1000 * points);
     io.emit("progress", Progress.update(points));
-    io.emit("event", event.data.displayName ?? event.data.username, points, sender);
+    io.emit(
+      "event",
+      event.data.displayName ?? event.data.username,
+      points,
+      sender
+    );
   }
 });
