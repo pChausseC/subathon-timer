@@ -39,9 +39,7 @@ export const SubPopup = React.forwardRef<
   }, [socket, eventHandler]);
   return (
     <Toast {...props} ref={ref} className="flex flex-col overflow-visible">
-      {giftReceivers.length ? (
-        <TextLoop texts={giftReceivers} />
-      ) : undefined}
+      {giftReceivers.length ? <TextLoop texts={giftReceivers} /> : undefined}
       <ToastDescription className="mx-auto">
         {`+${points} ${name}`}
       </ToastDescription>
@@ -87,7 +85,7 @@ const TextLoop = ({ texts }: { texts: string[] }) => {
     );
   }, [index, setIndex, texts.length]);
   return (
-    <div className="absolute bottom-full mb-1 h-[40px] overflow-hidden rounded-lg border border-primary px-1 py-1">
+    <div className="absolute bottom-full mb-1 flex w-full items-center overflow-hidden rounded-lg border border-primary px-2 py-1 shadow-lg">
       <AnimatePresence mode="popLayout">
         <motion.div
           variants={variants}
@@ -99,7 +97,7 @@ const TextLoop = ({ texts }: { texts: string[] }) => {
             y: { type: "linear" },
             duration: 0.3,
           }}
-          className="whitespace-nowrap text-primary"
+          className="text-md relative mb-1 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-center leading-none text-primary"
         >
           {texts[index]}
         </motion.div>
