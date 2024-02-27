@@ -7,7 +7,7 @@ import {
 } from "@/providers/socket-provider";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { VariantProps, cva } from "class-variance-authority";
+import { type VariantProps, cva } from "class-variance-authority";
 
 const subPopupVariants = cva("flex flex-col overflow-visible", {
   variants: {
