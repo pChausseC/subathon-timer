@@ -24,8 +24,8 @@ export function Toaster() {
     }
 
     socket.on("event", handleEvent);
-    socket.on("gift", (name) => {
-      toast({ name, points: 0 });
+    socket.on("gift", (name, amount) => {
+      toast({ name, points: 0, amount });
     });
     return () => {
       socket?.off("event", handleEvent);

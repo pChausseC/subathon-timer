@@ -10,6 +10,7 @@ type ToasterToast = ToastProps & {
   id: string;
   points: number;
   name: string;
+  amount?: number;
 };
 
 const actionTypes = {

@@ -27,16 +27,19 @@ export const SubPopup = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof Toast> & {
     name: string;
     initialPoints: number;
+    amount?: number;
   }
->(({ name, initialPoints, ...props }, ref) => {
+>(({ name, initialPoints, amount = 1, ...props }, ref) => {
   const [points, setPoints] = React.useState(initialPoints);
   const [giftReceivers, setGiftReceivers] = React.useState<string[]>([]);
   const { socket } = useSocket();
+
   const variant = useMemo(() => {
-    if (giftReceivers.length >= 50) return "gradient";
-    if (giftReceivers.length >= 100) return "rainbow";
+    if (amount >= 100) return "rainbow";
+    if (amount >= 50) return "gradient";
     return "default";
-  }, [giftReceivers]);
+  }, [amount]);
+
   const eventHandler: ServerToClientEvents["event"] = useCallback(
     (receiver, points, sender) => {
       if (sender === name) {

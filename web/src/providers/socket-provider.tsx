@@ -9,7 +9,7 @@ export interface ServerToClientEvents {
   timeUpdate: (days: string, time: string, points: number) => void;
   timeElapsed: (time: string) => void;
   event: (username: string, points: number, sender?: string) => void;
-  gift: (username: string) => void;
+  gift: (username: string, amount: number) => void;
   progress: (points: number) => void;
   goal: (goal: string) => void;
 }

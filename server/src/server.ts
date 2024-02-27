@@ -9,7 +9,7 @@ export interface ServerToClientEvents {
   timeUpdate: (days: string, time: string, points: number) => void;
   timeElapsed: (time: string) => void;
   event: (username: string, points: number, sender?: string) => void;
-  gift: (username: string) => void;
+  gift: (username: string, amount: number) => void;
   progress: (points: number) => void;
   goal: (goal: string) => void;
 }
@@ -55,8 +55,8 @@ io.on("connection", (socket) => {
         break;
       case "gift":
         let sender = "gifter";
-        io.emit("gift", sender);
-        Array.from(Array(5)).forEach((_) => {
+        io.emit("gift", sender, 100);
+        Array.from(Array(100)).forEach((_) => {
           let a = tierOne();
           timer.addTime(60 * 1000 * a);
           io.emit("progress", Progress.update(a));
@@ -92,7 +92,11 @@ StreamElementsClient.on("event", (event) => {
   let sender: string | undefined;
   console.log(event);
   if (event.type === "communityGiftPurchase") {
-    io.emit("gift", event.data.displayName ?? event.data.username);
+    io.emit(
+      "gift",
+      event.data.displayName ?? event.data.username,
+      event.data.amount
+    );
   }
   if (event.type === "tip") {
     console.log(event);
