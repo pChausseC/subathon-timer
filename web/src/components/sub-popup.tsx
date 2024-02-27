@@ -33,7 +33,7 @@ export const SubPopup = React.forwardRef<
   const [giftReceivers, setGiftReceivers] = React.useState<string[]>([]);
   const { socket } = useSocket();
   const variant = useMemo(() => {
-    if (giftReceivers.length >= 1) return "gradient";
+    if (giftReceivers.length >= 50) return "gradient";
     if (giftReceivers.length >= 100) return "rainbow";
     return "default";
   }, [giftReceivers]);
