@@ -34,7 +34,7 @@ io.on("connection", (socket) => {
   // Send Timer and Progress Status
   socket.emit("timeUpdate", days, time, points);
   socket.emit("timeElapsed", timer.getTimeElapsed());
-  socket.emit("progress", Progress.progress, points);
+  socket.emit("progress", Progress.progress, Progress.total);
   socket.emit("goal", Progress.goal);
   socket.on("start", () => {
     if (!timer.isRunning) {
@@ -59,11 +59,7 @@ io.on("connection", (socket) => {
         Array.from(Array(5)).forEach((_) => {
           let a = tierOne();
           timer.addTime(60 * 1000 * a);
-          io.emit(
-            "progress",
-            Progress.update(a),
-            timer.getRemainingTime().points
-          );
+          io.emit("progress", Progress.update(a), Progress.total);
           io.emit("event", `IONCANNON`, a, sender);
         });
         break;
@@ -72,7 +68,7 @@ io.on("connection", (socket) => {
     }
     if (tier !== "gift") {
       timer.addTime(60 * 1000 * p);
-      io.emit("progress", Progress.update(p), timer.getRemainingTime().points);
+      io.emit("progress", Progress.update(p), Progress.total);
       io.emit("event", `IONCANNON`, p);
     }
   });
@@ -128,11 +124,7 @@ StreamElementsClient.on("event", (event) => {
   }
   if (points) {
     timer.addTime(60 * 1000 * points);
-    io.emit(
-      "progress",
-      Progress.update(points),
-      timer.getRemainingTime().points
-    );
+    io.emit("progress", Progress.update(points), Progress.total);
     io.emit(
       "event",
       event.data.displayName ?? event.data.username,

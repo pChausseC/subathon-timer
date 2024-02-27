@@ -1,9 +1,11 @@
-let points = 0;
+let points = 6;
 const max = 500;
-let progress = 0;
+let progress = 6;
 let goal = "";
+let total = 6;
 const update = (p: number) => {
   points += p;
+  total += p;
   if (points > max) points -= max;
   progress = (points / max) * 100;
   return progress;
@@ -11,4 +13,4 @@ const update = (p: number) => {
 const setGoal = (g: string) => {
   goal = g;
 };
-export { progress, update, goal, setGoal };
+export { progress, update, goal, setGoal, total };
