@@ -3,7 +3,10 @@
 import { useCallback, useEffect } from "react";
 import { ToastProvider, ToastViewport } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
-import { type ServerToClientEvents, useSocket } from "@/providers/socket-provider";
+import {
+  type ServerToClientEvents,
+  useSocket,
+} from "@/providers/socket-provider";
 import { SubPopup } from "../sub-popup";
 
 export function Toaster() {
@@ -31,10 +34,8 @@ export function Toaster() {
   }, [socket, handleEvent, toast]);
   return (
     <ToastProvider duration={5000}>
-      {toasts.map(function ({ id, name, points, ...props }) {
-        return (
-          <SubPopup key={id} name={name} initialPoints={points} {...props} />
-        );
+      {toasts.map(function ({ id, points, ...props }) {
+        return <SubPopup key={id} initialPoints={points} {...props} />;
       })}
       <ToastViewport />
     </ToastProvider>
