@@ -90,9 +90,8 @@ io.on("connection", (socket) => {
 StreamElementsClient.on("event", (event) => {
   let points = 0;
   let sender: string | undefined;
+  console.log(event);
   if (event.type === "communityGiftPurchase") {
-    console.log(event);
-    //todo
     io.emit("gift", event.data.displayName ?? event.data.username);
   }
   if (event.type === "tip") {
