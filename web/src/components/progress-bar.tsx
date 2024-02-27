@@ -25,7 +25,7 @@ export const ProgressBar = () => {
   }, [socket]);
   return (
     <Progress value={progress}>
-      <span className="font-wide relative bottom-[7px] px-1 text-xs font-[500] leading-none invert">
+      <span className="font-wide relative bottom-[8px] px-1 text-xs font-[500] leading-none invert">
         {total}/{getNextMultipleOf500(total)}
       </span>
     </Progress>
