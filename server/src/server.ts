@@ -10,7 +10,7 @@ export interface ServerToClientEvents {
   timeElapsed: (time: string) => void;
   event: (username: string, points: number, sender?: string) => void;
   gift: (username: string, amount: number) => void;
-  progress: (points: number) => void;
+  progress: (points: number, total: number) => void;
   goal: (goal: string) => void;
 }
 
@@ -34,7 +34,7 @@ io.on("connection", (socket) => {
   // Send Timer and Progress Status
   socket.emit("timeUpdate", days, time, points);
   socket.emit("timeElapsed", timer.getTimeElapsed());
-  socket.emit("progress", Progress.progress);
+  socket.emit("progress", Progress.progress, points);
   socket.emit("goal", Progress.goal);
   socket.on("start", () => {
     if (!timer.isRunning) {
@@ -55,11 +55,15 @@ io.on("connection", (socket) => {
         break;
       case "gift":
         let sender = "gifter";
-        io.emit("gift", sender, 100);
-        Array.from(Array(100)).forEach((_) => {
+        io.emit("gift", sender, 5);
+        Array.from(Array(5)).forEach((_) => {
           let a = tierOne();
           timer.addTime(60 * 1000 * a);
-          io.emit("progress", Progress.update(a));
+          io.emit(
+            "progress",
+            Progress.update(a),
+            timer.getRemainingTime().points
+          );
           io.emit("event", `IONCANNON`, a, sender);
         });
         break;
@@ -68,7 +72,7 @@ io.on("connection", (socket) => {
     }
     if (tier !== "gift") {
       timer.addTime(60 * 1000 * p);
-      io.emit("progress", Progress.update(p));
+      io.emit("progress", Progress.update(p), timer.getRemainingTime().points);
       io.emit("event", `IONCANNON`, p);
     }
   });
@@ -124,7 +128,11 @@ StreamElementsClient.on("event", (event) => {
   }
   if (points) {
     timer.addTime(60 * 1000 * points);
-    io.emit("progress", Progress.update(points));
+    io.emit(
+      "progress",
+      Progress.update(points),
+      timer.getRemainingTime().points
+    );
     io.emit(
       "event",
       event.data.displayName ?? event.data.username,

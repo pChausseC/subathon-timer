@@ -10,7 +10,7 @@ export interface ServerToClientEvents {
   timeElapsed: (time: string) => void;
   event: (username: string, points: number, sender?: string) => void;
   gift: (username: string, amount: number) => void;
-  progress: (points: number) => void;
+  progress: (points: number, total: number) => void;
   goal: (goal: string) => void;
 }
 export interface ClientToServerEvents {
