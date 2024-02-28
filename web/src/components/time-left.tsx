@@ -65,7 +65,7 @@ export const TimeLeft = () => {
         <Skeleton className="w-[7.1ch]">00:00:00</Skeleton>
       ) : (
         <span
-          className="animate-spin group-data-[stage='1']:animate-pump mb-[18px] w-[7.1ch] leading-[30px] tracking-wide group-data-[glow=true]:animate-glow"
+          className="group-data-[stage='1']:animate-pump mb-[18px] w-[7.1ch] leading-[30px] tracking-wide group-data-[glow=true]:animate-glow"
           style={
             !glowing
               ? { textShadow: `0 1px 20px rgb(243 243 243/${glow / 1_000})` }
