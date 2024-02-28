@@ -10,11 +10,14 @@ const setPoints = (p: number) => {
   total = 0;
   update(p);
 };
+function getPreviousMultipleOfMax(x: number): number {
+  return Math.floor(x / max) * max;
+}
 const update = (p: number) => {
   points += p;
   total += p;
   cacheTotalProgess(total);
-  if (points > max) points -= max;
+  if (points > max) points -= getPreviousMultipleOfMax(points);
   progress = (points / max) * 100;
   return progress;
 };
