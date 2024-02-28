@@ -73,7 +73,7 @@ const config = {
           to: { height: "0" },
         },
         pump: {
-          "50%": { scale: "0.97" },
+          "50%": { transform: "scale(0.97)" },
         },
       },
       animation: {
