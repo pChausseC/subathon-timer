@@ -83,6 +83,7 @@
     }
     50% {
       text-shadow: none;
+      transform: scale(0.97);
     }
   }
 }
