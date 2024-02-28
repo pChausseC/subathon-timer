@@ -25,9 +25,9 @@ export const TimeLeft = () => {
       });
       setDays(days);
       setTime(time);
-      if (points > 5) setStage(4);
-      else if (points > 1) setStage(3);
-      else if (points > 1/6) setStage(2);
+      if (points > 60) setStage(4);
+      else if (points > 10) setStage(3);
+      else if (points > 1) setStage(2);
       else if (points > 0) setStage(1);
       else setStage(0);
     });
@@ -48,14 +48,14 @@ export const TimeLeft = () => {
 
   return (
     <div
-      className="group flex items-stretch gap-2 text-6xl font-bold transition-colors duration-500 data-[glow=true]:!text-primary data-[stage='0']:text-yellow-400 data-[stage='1']:text-yellow-400 data-[stage='2']:text-yellow-400 data-[stage='3']:text-red-600"
+      className="group flex items-stretch gap-2 text-6xl font-bold transition-colors duration-500 data-[glow=true]:!text-primary data-[stage='0']:text-red-600 data-[stage='1']:text-red-600 data-[stage='2']:text-red-600 data-[stage='3']:text-yellow-400"
       data-glow={glowing}
       data-stage={stage}
     >
       {loading ? (
         <Skeleton className="w-[2ch] px-1 text-[47px]">00</Skeleton>
       ) : (
-        <div className="flex items-center bg-foreground px-1 text-[47px] text-background group-data-[glow=true]:!bg-primary group-data-[stage='0']:bg-yellow-400 group-data-[stage='1']:bg-yellow-400 group-data-[stage='2']:bg-yellow-400 group-data-[stage='3']:bg-red-600">
+        <div className="flex items-center bg-foreground px-1 text-[47px] text-background group-data-[glow=true]:!bg-primary group-data-[stage='0']:bg-red-600 group-data-[stage='1']:bg-red-600 group-data-[stage='2']:bg-red-600 group-data-[stage='3']:bg-yellow-400">
           <span className="mb-[15px] w-[2ch] text-center leading-[30px]">
             {days}
           </span>

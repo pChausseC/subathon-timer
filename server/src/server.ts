@@ -40,10 +40,10 @@ const cachedToNumber = (s: string | null | undefined) =>
 
 const init = async () => {
   // Get cached values
-  let timerInit = cachedToNumber(await cachedTimeleft()) ?? 6 * 60 * 1000;
+  let timerInit = cachedToNumber(await cachedTimeleft()) ?? 1 * 60 * 1000;
   let timerElapsed = cachedToNumber(await cachedTimeElapsed()) ?? 0;
   let goalInit = (await cachedGoal()) ?? "";
-  let progressInit = cachedToNumber(await cachedTotalProgess()) ?? 6;
+  let progressInit = cachedToNumber(await cachedTotalProgess()) ?? 1;
 
   Progress.setPoints(progressInit);
   Progress.setGoal(goalInit);
@@ -128,6 +128,9 @@ const init = async () => {
     let points = 0;
     let sender: string | undefined;
     console.log(event);
+    if (timer.getRemainingTime().points <= 10) {
+      return; //dont do it
+    }
     if (event.type === "communityGiftPurchase") {
       io.emit(
         "gift",
@@ -136,7 +139,6 @@ const init = async () => {
       );
     }
     if (event.type === "tip") {
-      console.log(event);
       points = event.data.amount * 2;
     }
     if (event.type === "subscriber") {

@@ -59,10 +59,6 @@ export class CountdownTimer {
     return this.isRunning_;
   }
   addTime(extraTime: number) {
-    // if (this.remainingTime === 0) {
-    //   //cannot add more time when time is up
-    //   return;
-    // }
     this.remainingTime += extraTime;
     console.log(
       `Added ${extraTime / (60 * 1000)} minutes. New remaining time: ${
