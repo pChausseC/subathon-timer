@@ -1,19 +1,19 @@
 import { Server as SocketServer } from "socket.io";
 import { ClientToServerEvents, ServerToClientEvents } from "./server";
+import { cacheTimeElapsed, cacheTimeleft } from "./cache";
 
 export class CountdownTimer {
   private remainingTime: number;
-  private timeElapsed: number;
   private timerId: NodeJS.Timeout | null;
   private io: SocketServer<ClientToServerEvents, ServerToClientEvents>;
   private isRunning_: boolean;
 
   constructor(
     private initialTime: number = 30 * 60 * 1000,
+    private timeElapsed: number = 0,
     io: SocketServer<ClientToServerEvents, ServerToClientEvents>
   ) {
     this.remainingTime = initialTime;
-    this.timeElapsed = 0;
     this.timerId = null;
     this.io = io;
   }
@@ -30,6 +30,8 @@ export class CountdownTimer {
           splitDays: true,
         });
         const formattedElapsedTime = this.formatTime(this.timeElapsed);
+        cacheTimeleft(this.remainingTime);
+        cacheTimeElapsed(this.timeElapsed);
         this.io.emit(
           "timeUpdate",
           formattedTime.days,
