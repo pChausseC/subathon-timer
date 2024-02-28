@@ -16,8 +16,9 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
-  add: (tier?: "1" | "2" | "3" | "gift") => void;
+  add: (tier?: "1" | "2" | "3" | "gift", amount?: number) => void;
   setGoal: (goal: string) => void;
+  reset: () => void;
 }
 type SocketContextType = {
   socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;

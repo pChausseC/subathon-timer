@@ -1,8 +1,8 @@
 import Redis, { Callback } from "ioredis";
 
-// Connect to your internal Redis instance using the REDIS_URL environment variable
-// The REDIS_URL is set to the internal Redis URL e.g. redis://red-343245ndffg023:6379
-const redis = new Redis(process.env.REDIS_URL);
+const redis = process.env.REDIS_URL
+  ? new Redis(process.env.REDIS_URL)
+  : undefined;
 
 const cacheGetCallback: Callback<string> = (err, result) => {
   if (err) {
@@ -13,17 +13,18 @@ const cacheGetCallback: Callback<string> = (err, result) => {
   }
 };
 
-const cacheGoal = (goal: string) => redis.set("goal", goal);
-const cachedGoal = () => redis.get("goal", cacheGetCallback);
+const cacheGoal = (goal: string) => redis?.set("goal", goal);
+const cachedGoal = () => redis?.get("goal", cacheGetCallback);
 
-const cacheTotalProgess = (points: number) => redis.set("totalProgress", points);
-const cachedTotalProgess = () => redis.get("totalProgress", cacheGetCallback);
+const cacheTotalProgess = (points: number) =>
+  redis?.set("totalProgress", points);
+const cachedTotalProgess = () => redis?.get("totalProgress", cacheGetCallback);
 
-const cacheTimeleft = (time: number) => redis.set("timeleft", time);
-const cachedTimeleft = () => redis.get("timeleft", cacheGetCallback);
+const cacheTimeleft = (time: number) => redis?.set("timeleft", time);
+const cachedTimeleft = () => redis?.get("timeleft", cacheGetCallback);
 
-const cacheTimeElapsed = (time: number) => redis.set("elapsed", time);
-const cachedTimeElapsed = () => redis.get("elapsed", cacheGetCallback);
+const cacheTimeElapsed = (time: number) => redis?.set("elapsed", time);
+const cachedTimeElapsed = () => redis?.get("elapsed", cacheGetCallback);
 
 const clearCache = async () => {
   await cacheGoal(null);

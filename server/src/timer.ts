@@ -50,6 +50,11 @@ export class CountdownTimer {
       this.isRunning_ = false;
     }
   }
+  reset() {
+    this.stop();
+    this.remainingTime = 0;
+    this.timeElapsed = 0;
+  }
   get isRunning() {
     return this.isRunning_;
   }
