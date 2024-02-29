@@ -15,7 +15,8 @@ export const Controls = () => {
   };
 
   const reset = () => {
-    socket?.emit("reset");
+    const c = confirm("Are you sure? this will reset everything back to 0.");
+    if (c) socket?.emit("reset");
   };
   return (
     <div className="space-x-2">
@@ -26,10 +27,15 @@ export const Controls = () => {
         <PauseIcon />
       </Button>
       <AddPoints />
-      <Button onClick={reset} size="icon" variant="outline" title="reset">
+      <SetTime />
+      <Button
+        onClick={reset}
+        size="icon"
+        variant="destructiveOutline"
+        title="reset"
+      >
         <ResetIcon />
       </Button>
-      <SetTime />
     </div>
   );
 };
