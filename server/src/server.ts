@@ -12,6 +12,9 @@ import {
   cachedTimeleft,
   clearCache,
 } from "./cache";
+import { ONE_HOUR, pointsToTime, timeToPoints } from "./utils";
+const START_TIME = 24 * ONE_HOUR; //24hrs
+const START_GOAL = "";
 export interface ServerToClientEvents {
   timeUpdate: (days: string, time: string, points: number) => void;
   timeElapsed: (time: string) => void;
@@ -41,10 +44,10 @@ const cachedToNumber = (s: string | null | undefined) =>
 
 const init = async () => {
   // Get cached values
-  let timerInit = cachedToNumber(await cachedTimeleft()) ?? 1 * 60 * 1000;
+  let timerInit = cachedToNumber(await cachedTimeleft()) ?? START_TIME;
   let timerElapsed = cachedToNumber(await cachedTimeElapsed()) ?? 0;
-  let goalInit = (await cachedGoal()) ?? "";
-  let progressInit = cachedToNumber(await cachedTotalProgess()) ?? 1;
+  let goalInit = (await cachedGoal()) ?? START_GOAL;
+  let progressInit = cachedToNumber(await cachedTotalProgess()) ?? 0;
 
   Progress.setPoints(progressInit);
   Progress.setGoal(goalInit);
@@ -81,7 +84,7 @@ const init = async () => {
           io.emit("gift", sender, amount);
           Array.from(Array(amount)).forEach((_) => {
             let a = tierOne();
-            timer.addTime(60 * 1000 * a);
+            timer.addTime(pointsToTime(a));
             io.emit("progress", Progress.update(a), Progress.total);
             io.emit("event", `IONCANNON`, a, sender);
           });
@@ -90,7 +93,7 @@ const init = async () => {
           p = tierOne();
       }
       if (tier !== "gift") {
-        timer.addTime(60 * 1000 * p);
+        timer.addTime(pointsToTime(p));
         io.emit("progress", Progress.update(p), Progress.total);
         io.emit("event", `IONCANNON`, p);
       }
@@ -102,7 +105,9 @@ const init = async () => {
     socket.on("setTime", (newTime: number) => {
       timer.remainingTime = newTime;
       const { days, time, points } = timer.remainingTime;
-      Progress.setPoints(timer.totalTimeInPoints);
+      Progress.setPoints(
+        Math.max(timer.totalTimeInPoints - timeToPoints(START_TIME), 0)
+      );
       io.emit("timeUpdate", days, time, points);
       io.emit("progress", Progress.progress, Progress.total);
     });
@@ -116,15 +121,18 @@ const init = async () => {
         timer.stop();
       }
       await clearCache();
+      // Start at 24hours, 0 points
       Progress.setPoints(0);
-      Progress.setGoal("");
+      Progress.setGoal(START_GOAL);
       timer.reset();
+      timer.addTime(START_TIME);
       // send reset values
       const { days, time, points } = timer.remainingTime;
       io.emit("timeUpdate", days, time, points);
       io.emit("timeElapsed", timer.timeElapsed);
       io.emit("progress", Progress.progress, Progress.total);
       io.emit("goal", Progress.goal);
+      timer.start();
     });
     // Clean up the socket on disconnect
     socket.on("disconnect", () => {
@@ -170,7 +178,7 @@ const init = async () => {
       points = (event.data.amount / 100) * 2;
     }
     if (points) {
-      timer.addTime(60 * 1000 * points);
+      timer.addTime(pointsToTime(points));
       io.emit("progress", Progress.update(points), Progress.total);
       io.emit(
         "event",

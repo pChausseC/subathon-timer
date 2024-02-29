@@ -1,6 +1,7 @@
 import { Server as SocketServer } from "socket.io";
 import { ClientToServerEvents, ServerToClientEvents } from "./server";
 import { cacheTimeElapsed, cacheTimeleft } from "./cache";
+import { ONE_DAY, ONE_HOUR, ONE_MIN, ONE_SECOND, timeToPoints } from "./utils";
 
 export class CountdownTimer {
   private _remainingTime: number;
@@ -8,7 +9,7 @@ export class CountdownTimer {
   private io: SocketServer<ClientToServerEvents, ServerToClientEvents>;
   private isRunning_: boolean;
   constructor(
-    private initialTime: number = 30 * 60 * 1000,
+    private initialTime: number = 30 * ONE_MIN,
     private _timeElapsed: number = 0,
     io: SocketServer<ClientToServerEvents, ServerToClientEvents>
   ) {
@@ -23,8 +24,8 @@ export class CountdownTimer {
       if (this._remainingTime <= 0) {
         this.stop();
       } else {
-        this._remainingTime -= 1000; // Subtract one second
-        this._timeElapsed += 1000;
+        this._remainingTime -= ONE_SECOND; // Subtract one second
+        this._timeElapsed += ONE_SECOND;
         const formattedTime = this.formatTime(this._remainingTime, {
           splitDays: true,
         });
@@ -35,11 +36,11 @@ export class CountdownTimer {
           "timeUpdate",
           formattedTime.days,
           formattedTime.time,
-          this._remainingTime / (60 * 1000)
+          timeToPoints(this._remainingTime)
         );
         this.io.emit("timeElapsed", formattedElapsedTime);
       }
-    }, 1000);
+    }, ONE_SECOND);
   }
 
   stop() {
@@ -62,7 +63,7 @@ export class CountdownTimer {
       ...this.formatTime(this._remainingTime, {
         splitDays: true,
       }),
-      points: this._remainingTime / (60 * 1000),
+      points: timeToPoints(this._remainingTime),
     };
   }
   public set remainingTime(t: number) {
@@ -72,14 +73,16 @@ export class CountdownTimer {
     return this.formatTime(this._timeElapsed);
   }
   get totalTimeInPoints() {
-    return Math.floor((this._remainingTime + this._timeElapsed) / (60 * 1000));
+    return Math.floor(timeToPoints(this._remainingTime + this._timeElapsed));
   }
   addTime(extraTime: number) {
     this._remainingTime += extraTime;
     console.log(
-      `Added ${extraTime / (60 * 1000)} minutes. New remaining time: ${
-        this._remainingTime / (60 * 1000)
-      } minutes.`
+      `Added ${timeToPoints(
+        extraTime
+      )} minutes. New remaining time: ${timeToPoints(
+        this._remainingTime
+      )} minutes.`
     );
     const formattedTime = this.formatTime(this._remainingTime, {
       splitDays: true,
@@ -88,7 +91,7 @@ export class CountdownTimer {
       "timeUpdate",
       formattedTime.days,
       formattedTime.time,
-      this._remainingTime / (60 * 1000)
+      timeToPoints(this._remainingTime)
     );
   }
   private formatTime(
@@ -103,12 +106,10 @@ export class CountdownTimer {
     milliseconds: number,
     opts?: { splitDays?: boolean }
   ): string | { days: string; time: string } {
-    const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
-    const hours = Math.floor(
-      (milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+    const days = Math.floor(milliseconds / ONE_DAY);
+    const hours = Math.floor((milliseconds % ONE_DAY) / ONE_HOUR);
+    const minutes = Math.floor((milliseconds % ONE_HOUR) / ONE_MIN);
+    const seconds = Math.floor((milliseconds % ONE_MIN) / ONE_SECOND);
     const time = `${hours.toString().padStart(2, "0")}:${minutes
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
