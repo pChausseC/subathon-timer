@@ -3,17 +3,16 @@ import { ClientToServerEvents, ServerToClientEvents } from "./server";
 import { cacheTimeElapsed, cacheTimeleft } from "./cache";
 
 export class CountdownTimer {
-  private remainingTime: number;
+  private _remainingTime: number;
   private timerId: NodeJS.Timeout | null;
   private io: SocketServer<ClientToServerEvents, ServerToClientEvents>;
   private isRunning_: boolean;
-
   constructor(
     private initialTime: number = 30 * 60 * 1000,
-    private timeElapsed: number = 0,
+    private _timeElapsed: number = 0,
     io: SocketServer<ClientToServerEvents, ServerToClientEvents>
   ) {
-    this.remainingTime = initialTime;
+    this._remainingTime = initialTime;
     this.timerId = null;
     this.io = io;
   }
@@ -21,22 +20,22 @@ export class CountdownTimer {
   start() {
     this.isRunning_ = true;
     this.timerId = setInterval(() => {
-      if (this.remainingTime <= 0) {
+      if (this._remainingTime <= 0) {
         this.stop();
       } else {
-        this.remainingTime -= 1000; // Subtract one second
-        this.timeElapsed += 1000;
-        const formattedTime = this.formatTime(this.remainingTime, {
+        this._remainingTime -= 1000; // Subtract one second
+        this._timeElapsed += 1000;
+        const formattedTime = this.formatTime(this._remainingTime, {
           splitDays: true,
         });
-        const formattedElapsedTime = this.formatTime(this.timeElapsed);
-        cacheTimeleft(this.remainingTime);
-        cacheTimeElapsed(this.timeElapsed);
+        const formattedElapsedTime = this.formatTime(this._timeElapsed);
+        cacheTimeleft(this._remainingTime);
+        cacheTimeElapsed(this._timeElapsed);
         this.io.emit(
           "timeUpdate",
           formattedTime.days,
           formattedTime.time,
-          this.remainingTime / (60 * 1000)
+          this._remainingTime / (60 * 1000)
         );
         this.io.emit("timeElapsed", formattedElapsedTime);
       }
@@ -52,40 +51,45 @@ export class CountdownTimer {
   }
   reset() {
     this.stop();
-    this.remainingTime = 0;
-    this.timeElapsed = 0;
+    this._remainingTime = 0;
+    this._timeElapsed = 0;
   }
   get isRunning() {
     return this.isRunning_;
   }
+  get remainingTime(): { days: string; time: string; points: number } {
+    return {
+      ...this.formatTime(this._remainingTime, {
+        splitDays: true,
+      }),
+      points: this._remainingTime / (60 * 1000),
+    };
+  }
+  public set remainingTime(t: number) {
+    this._remainingTime = t;
+  }
+  get timeElapsed() {
+    return this.formatTime(this._timeElapsed);
+  }
+  get totalTimeInPoints() {
+    return Math.floor((this._remainingTime + this._timeElapsed) / (60 * 1000));
+  }
   addTime(extraTime: number) {
-    this.remainingTime += extraTime;
+    this._remainingTime += extraTime;
     console.log(
       `Added ${extraTime / (60 * 1000)} minutes. New remaining time: ${
-        this.remainingTime / (60 * 1000)
+        this._remainingTime / (60 * 1000)
       } minutes.`
     );
-    const formattedTime = this.formatTime(this.remainingTime, {
+    const formattedTime = this.formatTime(this._remainingTime, {
       splitDays: true,
     });
     this.io.emit(
       "timeUpdate",
       formattedTime.days,
       formattedTime.time,
-      this.remainingTime / (60 * 1000)
+      this._remainingTime / (60 * 1000)
     );
-  }
-
-  getRemainingTime(): { days: string; time: string; points: number } {
-    return {
-      ...this.formatTime(this.remainingTime, {
-        splitDays: true,
-      }),
-      points: this.remainingTime / (60 * 1000),
-    };
-  }
-  getTimeElapsed(): string {
-    return this.formatTime(this.timeElapsed);
   }
   private formatTime(
     milliseconds: number,

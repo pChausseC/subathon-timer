@@ -26,6 +26,7 @@ export interface ClientToServerEvents {
   stop: () => void;
   add: (tier?: "1" | "2" | "3" | "gift", amount?: number) => void;
   setGoal: (goal: string) => void;
+  setTime: (time: number) => void;
   reset: () => void;
 }
 
@@ -52,10 +53,10 @@ const init = async () => {
 
   io.on("connection", (socket) => {
     console.log(`Socket ${socket.id} connected.`);
-    const { days, time, points } = timer.getRemainingTime();
+    const { days, time, points } = timer.remainingTime;
     // Send Timer and Progress Status
     socket.emit("timeUpdate", days, time, points);
-    socket.emit("timeElapsed", timer.getTimeElapsed());
+    socket.emit("timeElapsed", timer.timeElapsed);
     socket.emit("progress", Progress.progress, Progress.total);
     socket.emit("goal", Progress.goal);
     socket.on("start", () => {
@@ -98,6 +99,13 @@ const init = async () => {
       Progress.setGoal(goal);
       io.emit("goal", Progress.goal);
     });
+    socket.on("setTime", (newTime: number) => {
+      timer.remainingTime = newTime;
+      const { days, time, points } = timer.remainingTime;
+      Progress.setPoints(timer.totalTimeInPoints);
+      io.emit("timeUpdate", days, time, points);
+      io.emit("progress", Progress.progress, Progress.total);
+    });
     socket.on("stop", () => {
       if (timer.isRunning) {
         timer.stop();
@@ -112,9 +120,9 @@ const init = async () => {
       Progress.setGoal("");
       timer.reset();
       // send reset values
-      const { days, time, points } = timer.getRemainingTime();
+      const { days, time, points } = timer.remainingTime;
       io.emit("timeUpdate", days, time, points);
-      io.emit("timeElapsed", timer.getTimeElapsed());
+      io.emit("timeElapsed", timer.timeElapsed);
       io.emit("progress", Progress.progress, Progress.total);
       io.emit("goal", Progress.goal);
     });
@@ -128,7 +136,7 @@ const init = async () => {
     let points = 0;
     let sender: string | undefined;
     console.log(event);
-    if (timer.getRemainingTime().points <= 10) {
+    if (timer.remainingTime.points <= 10) {
       return; //dont do it
     }
     if (event.type === "communityGiftPurchase") {
