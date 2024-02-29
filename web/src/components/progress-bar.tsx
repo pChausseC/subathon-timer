@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react";
 import { useSocket } from "@/providers/socket-provider";
 import { Progress } from "./ui/progress";
-function getNextMultipleOf500(x: number): number {
-  return Math.ceil(x / 500) * 500;
+function getNextMultipleOf250(x: number): number {
+  return Math.ceil(x / 250) * 250;
 }
 export const ProgressBar = () => {
   const [progress, setProgress] = useState(0);
@@ -26,7 +26,7 @@ export const ProgressBar = () => {
   return (
     <Progress value={progress}>
       <span className="font-wide relative bottom-[8px] px-1 text-xs font-[500] leading-none invert">
-        {total}/{getNextMultipleOf500(total)}
+        {total}/{getNextMultipleOf250(total)}
       </span>
     </Progress>
   );
