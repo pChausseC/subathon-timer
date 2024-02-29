@@ -3,6 +3,7 @@ import { useSocket } from "@/providers/socket-provider";
 import { Button } from "./ui/button";
 import { PauseIcon, PlayIcon, ResetIcon } from "@radix-ui/react-icons";
 import { AddPoints } from "./add-points";
+import { SetTime } from "./set-time";
 
 export const Controls = () => {
   const { socket } = useSocket();
@@ -28,6 +29,7 @@ export const Controls = () => {
       <Button onClick={reset} size="icon" variant="outline" title="reset">
         <ResetIcon />
       </Button>
+      <SetTime />
     </div>
   );
 };
