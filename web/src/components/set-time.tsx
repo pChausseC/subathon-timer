@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from "./ui/form";
 
-
 export const SetTime = () => {
   const [open, setOpen] = useState(false);
   return (
@@ -28,6 +27,7 @@ export const SetTime = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-80 flex-col space-y-2 font-inter">
+        <div className="font-600 text-sm">Set Time Left</div>
         <SetTimeForm
           onSuccess={() => {
             setOpen(false);
@@ -86,7 +86,7 @@ const SetTimeForm = ({ onSuccess }: { onSuccess(): void }) => {
                   autoComplete="off"
                 />
               </FormControl>
-              <FormLabel className="mt-0">DD</FormLabel>
+              <FormLabel>DD</FormLabel>
             </FormItem>
           )}
         />
@@ -145,7 +145,9 @@ const SetTimeForm = ({ onSuccess }: { onSuccess(): void }) => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="col-start-4">Submit</Button>
+        <Button variant="black" type="submit" className="col-start-4">
+          Submit
+        </Button>
       </form>
     </Form>
   );
