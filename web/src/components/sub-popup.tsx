@@ -35,10 +35,10 @@ export const SubPopup = React.forwardRef<
   const { socket } = useSocket();
 
   const variant = useMemo(() => {
-    if (amount >= 100) return "rainbow";
-    if (amount >= 50) return "gradient";
+    if (amount >= 100 || initialPoints >= 1000) return "rainbow";
+    if (amount >= 50 || initialPoints >= 500) return "gradient";
     return "default";
-  }, [amount]);
+  }, [amount, initialPoints]);
 
   const eventHandler: ServerToClientEvents["event"] = useCallback(
     (receiver, points, sender) => {
