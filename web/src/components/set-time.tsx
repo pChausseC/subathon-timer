@@ -27,7 +27,6 @@ export const SetTime = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-80 flex-col space-y-2 font-inter">
-        <div className="font-600 text-sm">Set Time Left</div>
         <SetTimeForm
           onSuccess={() => {
             setOpen(false);
@@ -38,11 +37,15 @@ export const SetTime = () => {
   );
 };
 
-const formSchema = z.object({
+const timeShema = z.object({
   days: z.coerce.number().min(0).max(99),
   hours: z.coerce.number().min(0).max(23),
   mins: z.coerce.number().min(0).max(59),
   sec: z.coerce.number().min(0).max(59),
+});
+const formSchema = z.object({
+  left: timeShema,
+  elapsed: timeShema,
 });
 const ONE_SECOND = 1000;
 const ONE_MIN = 60 * ONE_SECOND;
@@ -53,16 +56,28 @@ const SetTimeForm = ({ onSuccess }: { onSuccess(): void }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      days: 0,
-      hours: 0,
-      mins: 0,
-      sec: 0,
+      left: {
+        days: 0,
+        hours: 0,
+        mins: 0,
+        sec: 0,
+      },
+      elapsed: {
+        days: 0,
+        hours: 0,
+        mins: 0,
+        sec: 0,
+      },
     },
   });
-  function onSubmit({ days, hours, mins, sec }: z.infer<typeof formSchema>) {
+  function onSubmit({
+    left: { days, hours, mins, sec },
+    elapsed,
+  }: z.infer<typeof formSchema>) {
     socket?.emit(
       "setTime",
       days * ONE_DAY + hours * ONE_HOUR + mins * ONE_MIN + sec * ONE_SECOND,
+      elapsed.days * ONE_DAY + elapsed.hours * ONE_HOUR + elapsed.mins * ONE_MIN + elapsed.sec * ONE_SECOND,
     );
     onSuccess();
   }
@@ -70,81 +85,160 @@ const SetTimeForm = ({ onSuccess }: { onSuccess(): void }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-4 gap-2"
+        className="flex flex-col gap-2"
       >
-        <FormField
-          control={form.control}
-          name="days"
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2">
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  placeholder="00"
-                  className="remove-arrow w-[4ch] pl-2 pr-1"
-                  autoComplete="off"
-                />
-              </FormControl>
-              <FormLabel>DD</FormLabel>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="hours"
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2">
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  placeholder="00"
-                  className="remove-arrow w-[4ch] pl-2 pr-1"
-                  autoComplete="off"
-                />
-              </FormControl>
-              <FormLabel>HH</FormLabel>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="mins"
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2">
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  placeholder="00"
-                  className="remove-arrow w-[4ch] pl-2 pr-1"
-                  autoComplete="off"
-                />
-              </FormControl>
-              <FormLabel>MM</FormLabel>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="sec"
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2">
-              <FormControl>
-                <Input
-                  {...field}
-                  type="number"
-                  placeholder="00"
-                  className="remove-arrow w-[4ch] pl-2 pr-1"
-                  autoComplete="off"
-                />
-              </FormControl>
-              <FormLabel>SS</FormLabel>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="font-600 text-sm">Set Time Left</div>
+        <div className="grid grid-cols-4 gap-2">
+          <FormField
+            control={form.control}
+            name="left.days"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="00"
+                    className="remove-arrow w-[4ch] pl-2 pr-1"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormLabel>DD</FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="left.hours"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="00"
+                    className="remove-arrow w-[4ch] pl-2 pr-1"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormLabel>HH</FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="left.mins"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="00"
+                    className="remove-arrow w-[4ch] pl-2 pr-1"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormLabel>MM</FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="left.sec"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="00"
+                    className="remove-arrow w-[4ch] pl-2 pr-1"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormLabel>SS</FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="font-600 text-sm">Set Time Elapsed</div>
+        <div className="grid grid-cols-4 gap-2">
+          <FormField
+            control={form.control}
+            name="elapsed.days"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="00"
+                    className="remove-arrow w-[4ch] pl-2 pr-1"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormLabel>DD</FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="elapsed.hours"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="00"
+                    className="remove-arrow w-[4ch] pl-2 pr-1"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormLabel>HH</FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="elapsed.mins"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="00"
+                    className="remove-arrow w-[4ch] pl-2 pr-1"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormLabel>MM</FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="elapsed.sec"
+            render={({ field }) => (
+              <FormItem className="flex items-center gap-2">
+                <FormControl>
+                  <Input
+                    {...field}
+                    type="number"
+                    placeholder="00"
+                    className="remove-arrow w-[4ch] pl-2 pr-1"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormLabel>SS</FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <Button variant="black" type="submit" className="col-start-4">
           Submit
         </Button>

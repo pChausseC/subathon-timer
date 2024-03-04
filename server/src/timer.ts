@@ -72,6 +72,9 @@ export class CountdownTimer {
   get timeElapsed() {
     return this.formatTime(this._timeElapsed);
   }
+  setTimeElapsed(t: number) {
+    this._timeElapsed = t;
+  }
   get totalTimeInPoints() {
     return Math.floor(timeToPoints(this._remainingTime + this._timeElapsed));
   }

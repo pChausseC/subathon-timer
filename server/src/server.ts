@@ -29,7 +29,7 @@ export interface ClientToServerEvents {
   stop: () => void;
   add: (tier?: "1" | "2" | "3" | "gift", amount?: number) => void;
   setGoal: (goal: string) => void;
-  setTime: (time: number) => void;
+  setTime: (left: number, elapsed: number) => void;
   reset: () => void;
 }
 
@@ -102,13 +102,15 @@ const init = async () => {
       Progress.setGoal(goal);
       io.emit("goal", Progress.goal);
     });
-    socket.on("setTime", (newTime: number) => {
-      timer.remainingTime = newTime;
+    socket.on("setTime", (left, elapsed) => {
+      timer.remainingTime = left;
+      timer.setTimeElapsed(elapsed);
       const { days, time, points } = timer.remainingTime;
       Progress.setPoints(
         Math.max(timer.totalTimeInPoints - timeToPoints(START_TIME), 0)
       );
       io.emit("timeUpdate", days, time, points);
+      io.emit("timeElapsed", timer.timeElapsed);
       io.emit("progress", Progress.progress, Progress.total);
     });
     socket.on("stop", () => {
