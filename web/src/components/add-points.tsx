@@ -72,6 +72,14 @@ export const AddPoints = () => {
         >
           Gift X 100
         </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            socket?.emit("add", "dono", 250);
+          }}
+          className="cursor-pointer"
+        >
+          dono 250$
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

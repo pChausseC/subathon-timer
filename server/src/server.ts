@@ -27,7 +27,7 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   start: () => void;
   stop: () => void;
-  add: (tier?: "1" | "2" | "3" | "gift", amount?: number) => void;
+  add: (tier?: "1" | "2" | "3" | "gift" | "dono", amount?: number) => void;
   setGoal: (goal: string) => void;
   setTime: (left: number, elapsed: number) => void;
   reset: () => void;
@@ -88,6 +88,9 @@ const init = async () => {
             io.emit("progress", Progress.update(a), Progress.total);
             io.emit("event", `IONCANNON`, a, sender);
           });
+          break;
+        case "dono":
+          p = 2 * amount;
           break;
         default:
           p = tierOne();
