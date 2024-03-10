@@ -149,7 +149,7 @@ const init = async () => {
     let points = 0;
     let sender: string | undefined;
     console.log(event);
-    if (timer.remainingTime.points <= 10) {
+    if (timer.remainingTime.points <= 30) {
       return; //dont do it
     }
     if (event.type === "communityGiftPurchase") {
