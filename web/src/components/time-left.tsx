@@ -26,7 +26,7 @@ export const TimeLeft = () => {
       setDays(days);
       setTime(time);
       if (points > 60) setStage(4);
-      else if (points > 10) setStage(3);
+      else if (points > 30) setStage(3);
       else if (points > 1) setStage(2);
       else if (points > 0) setStage(1);
       else setStage(0);
