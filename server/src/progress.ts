@@ -1,7 +1,7 @@
 import { cacheGoal, cacheTotalProgess } from "./cache";
 
 let points = 0;
-const max = 250;
+const max = 500;
 let progress = 0;
 let goal = "";
 let total = 0;
