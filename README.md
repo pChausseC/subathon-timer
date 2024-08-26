@@ -13,4 +13,4 @@ Connected to the server through a [Socket.io](https://socket.io/) Client.
 
 ## Server
 
-A [Socket.io](https://socket.io/) Server connected to Twitch API
+A [Socket.io](https://socket.io/) Server connected to StreamElements API
